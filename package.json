@@ -13,9 +13,6 @@
   ],
   "files": [
     "skills/",
-    "agents/",
-    "templates/",
-    "tests/",
     "README.md",
     "LICENSE"
   ],
@@ -25,7 +22,7 @@
     ],
     "subagents": {
       "agents": [
-        "./agents"
+        "./skills/aarp/agents"
       ]
     }
   }

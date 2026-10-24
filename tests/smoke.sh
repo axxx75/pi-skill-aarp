@@ -21,7 +21,7 @@ python3 - "$ROOT" <<'PY'
 import pathlib, sys, yaml
 root = pathlib.Path(sys.argv[1])
 bad = []
-files = sorted((root / "agents").glob("*.md")) + [root / "skills/aarp/SKILL.md"]
+files = sorted((root / "skills/aarp/agents").glob("*.md")) + [root / "skills/aarp/SKILL.md"]
 for f in files:
     text = f.read_text()
     if not text.startswith("---\n"):
@@ -48,7 +48,7 @@ if [[ $? -eq 0 ]]; then ok "frontmatter YAML (12 agenti + SKILL.md)"; else ko "f
 
 # 2. Solo i 12 agenti della pipeline, niente extra.
 expected="code-quality-auditor code-reviewer context-mapper db-auditor developer devops-auditor doc-coverage-auditor documentation-architect qa-test roadmap-director security-auditor ux-ui-auditor"
-actual="$(cd "${ROOT}/agents" && ls *.md | sed 's/\.md$//' | sort | tr '\n' ' ' | sed 's/ $//')"
+actual="$(cd "${SKILL_DIR}/agents" && ls *.md | sed 's/\.md$//' | sort | tr '\n' ' ' | sed 's/ $//')"
 if [[ "$actual" == "$expected" ]]; then ok "12 agenti attesi, nessun extra"; else ko "agenti: attesi [$expected], trovati [$actual]"; fi
 
 # 3. Script eseguibili.
@@ -57,7 +57,7 @@ for s in aarp-prepare.sh report-check.sh roadmap_helpers.sh templates-check.sh; 
 done
 
 # 4. Pre-flight templates-check sul pacchetto reale.
-if "${SCRIPTS}/templates-check.sh" "$ROOT"; then ok "templates-check sul pacchetto"; else ko "templates-check sul pacchetto"; fi
+if "${SCRIPTS}/templates-check.sh" "$SKILL_DIR"; then ok "templates-check sul pacchetto"; else ko "templates-check sul pacchetto"; fi
 
 # 5. Nessun path assoluto o path globale dei template nel pacchetto.
 # I pattern sono composti a runtime: il file di test non deve contenere i letterali cercati.
@@ -71,8 +71,8 @@ for w in audit.js remediate.js; do
   if grep -q 'args.templatesDir' "${SKILL_DIR}/workflows/${w}"; then ok "workflow ${w} usa args.templatesDir"; else ko "workflow ${w} non usa args.templatesDir"; fi
 done
 
-# 7. aarp-prepare.sh --skill-dir stampa la radice del pacchetto.
-if [[ "$("${SCRIPTS}/aarp-prepare.sh" --skill-dir)" == "$ROOT" ]]; then ok "aarp-prepare.sh --skill-dir"; else ko "aarp-prepare.sh --skill-dir"; fi
+# 7. aarp-prepare.sh --skill-dir stampa la directory della skill.
+if [[ "$("${SCRIPTS}/aarp-prepare.sh" --skill-dir)" == "$SKILL_DIR" ]]; then ok "aarp-prepare.sh --skill-dir"; else ko "aarp-prepare.sh --skill-dir"; fi
 
 # 8. report-check.sh self-test.
 good="${TMP}/good.md"; printf '# Report\n\n## Executive Database Summary\n\nok\n' > "$good"
@@ -83,10 +83,10 @@ if ! "${SCRIPTS}/report-check.sh" "$bad" "## Executive Database Summary" 2>/dev/
 if ! "${SCRIPTS}/report-check.sh" "${TMP}/nope.md" "## X" 2>/dev/null; then ok "report-check rifiuta un report assente"; else ko "report-check su report assente"; fi
 
 # 9. Fail-fast: template mancante → templates-check e aarp-prepare falliscono prima dello snapshot.
-broken="${TMP}/pkg"; cp -R "$ROOT" "$broken"; rm "${broken}/templates/AUDIT_APPSEC.template.md"
-if ! "${broken}/skills/aarp/scripts/templates-check.sh" "$broken" 2>/dev/null; then ok "templates-check fallisce con un template mancante"; else ko "templates-check non rileva il template mancante"; fi
-rm "${broken}/agents/qa-test.md"
-if ! "${broken}/skills/aarp/scripts/templates-check.sh" "$broken" 2>/dev/null; then ok "templates-check fallisce con un agente mancante"; else ko "templates-check non rileva l'agente mancante"; fi
+broken="${TMP}/pkg"; cp -R "$ROOT" "$broken"; rm "${broken}/skills/aarp/templates/AUDIT_APPSEC.template.md"
+if ! "${broken}/skills/aarp/scripts/templates-check.sh" "${broken}/skills/aarp" 2>/dev/null; then ok "templates-check fallisce con un template mancante"; else ko "templates-check non rileva il template mancante"; fi
+rm "${broken}/skills/aarp/agents/qa-test.md"
+if ! "${broken}/skills/aarp/scripts/templates-check.sh" "${broken}/skills/aarp" 2>/dev/null; then ok "templates-check fallisce con un agente mancante"; else ko "templates-check non rileva l'agente mancante"; fi
 repo="${TMP}/repo"; mkdir -p "$repo"; git -C "$repo" init -q; git -C "$repo" -c user.email=t@t -c user.name=t commit -q --allow-empty -m init
 base="${TMP}/reviews"
 if ! "${broken}/skills/aarp/scripts/aarp-prepare.sh" --target "$repo" --base "$base" >/dev/null 2>&1; then ok "aarp-prepare.sh fa fail-fast sul pre-flight"; else ko "aarp-prepare.sh non fa fail-fast"; fi

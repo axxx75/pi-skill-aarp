@@ -7,6 +7,7 @@ gate umani (H0-H6).
 Il pacchetto è autosufficiente: skill, workflow, script, i **12 agenti** della pipeline e gli **11
 template** dei report vivono qui dentro. Nessun path assoluto: la radice del pacchetto la ricava
 `skills/aarp/scripts/aarp-prepare.sh` da `dirname $0` e la passa ai workflow come `args.templatesDir`.
+Tutto ciò che è bundled (agenti, template, workflow, script) sta **dentro** la skill dir.
 
 ## Requirements
 
@@ -49,8 +50,10 @@ La skill si attiva da sola quando la richiesta la riguarda, oppure in modo espli
 
 ```text
 pi-skill-aarp/
-├── skills/aarp/
+├── skills/aarp/                 # la skill è autosufficiente: {baseDir} = skills/aarp
 │   ├── SKILL.md                 # orchestrazione (nessun path assoluto)
+│   ├── agents/                  # 12 agenti della pipeline (manifest pi.subagents.agents)
+│   ├── templates/               # 11 template dei report
 │   ├── workflows/
 │   │   ├── audit.js             # context → 6 audit ∥ → ROADMAP
 │   │   └── remediate.js         # developer → qa-test → code-reviewer
@@ -59,8 +62,6 @@ pi-skill-aarp/
 │       ├── templates-check.sh   # template e agenti citati esistono?
 │       ├── report-check.sh      # checkpoint semantico dei report
 │       └── roadmap_helpers.sh   # parsing/stato ROADMAP
-├── agents/                      # 12 agenti della pipeline
-├── templates/                   # 11 template dei report
 └── tests/smoke.sh
 ```
 

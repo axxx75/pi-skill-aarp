@@ -1,5 +1,7 @@
 ---
 name: aarp
+license: MIT
+compatibility: "bash >= 4, git >= 2.20, rsync; pi-subagents per gli agenti"
 description: "Pipeline AARP: audit multi-agente di un repository Git (context mapping, 6 audit in parallelo, ROADMAP P0/P1/P2) e remediation guidata con gate umani. Orchestra context-mapper, 6 auditor (ux-ui, security, db, code-quality, devops, doc-coverage), roadmap-director, developer, code-reviewer, qa-test, documentation-architect. Usa quando l'utente vuole auditare/revisionare un repo con AARP, o invoca /skill:aarp."
 ---
 
@@ -13,8 +15,9 @@ il target si tocca solo in Fase 3, dopo i gate H2+H3. Git e aggiornamento ROADMA
 SKILL_DIR=$({baseDir}/scripts/aarp-prepare.sh --skill-dir)
 ```
 
-`SKILL_DIR` è la radice del pacchetto (script, workflow, agenti e template): il path della skill te lo
-dà pi, `aarp-prepare.sh --skill-dir` lo ricava da `dirname $0`. Passalo ai workflow come `args.templatesDir`.
+`SKILL_DIR` è la directory della skill (`scripts/`, `workflows/`, `agents/`, `templates/` vivono qui):
+il path della skill te lo dà pi, `aarp-prepare.sh --skill-dir` lo ricava da `dirname $0`.
+Passalo ai workflow come `args.templatesDir`.
 
 ## Input
 
@@ -37,7 +40,7 @@ Fuori dalla skill (standalone): `aarp-scout`, `aarp-researcher` (utility), `engi
 
 1. Esegui e cattura l'output:
    ```
-   RD=$("${SKILL_DIR}/skills/aarp/scripts/aarp-prepare.sh" --target <path|url> [--branch B] [--review-dir D])
+   RD=$("${SKILL_DIR}/scripts/aarp-prepare.sh" --target <path|url> [--branch B] [--review-dir D])
    ```
    Stampa `<RD>`. Lo script esegue prima il pre-flight `scripts/templates-check.sh <SKILL_DIR>`:
    se un template o un agente citato manca nel pacchetto, fallisce senza creare lo snapshot.
@@ -64,7 +67,7 @@ Solo con `--only-doc` o se l'utente la chiede.
 1. Calcola `skip` con i checkpoint: per ogni report atteso in `<REP>`, se `report-check.sh` dà 0 → mettilo in `skip`.
 2. Lancia UN workflow:
    ```
-   subagent({ workflow: SKILL_DIR + "/skills/aarp/workflows/audit.js",
+   subagent({ workflow: SKILL_DIR + "/workflows/audit.js",
               args: { rd: "<RD>", templatesDir: SKILL_DIR, skip: [ ... ] },
               cwd: "<SRC>" })
    ```
@@ -78,7 +81,7 @@ Solo con `--only-doc` o se l'utente la chiede.
 2. Prepara l'ambiente nel parent:
    ```
    export ROADMAP_REPORT="<REP>/ROADMAP.md"
-   source "${SKILL_DIR}/skills/aarp/scripts/roadmap_helpers.sh"
+   source "${SKILL_DIR}/scripts/roadmap_helpers.sh"
    # skip già scartati in run precedenti (persistiti in run.json)
    skipped_csv=$(python3 -c "import json;print(','.join(json.load(open('<RD>/run.json')).get('skipped',[])))")
    ```
@@ -94,7 +97,7 @@ Solo con `--only-doc` o se l'utente la chiede.
       ```
    e. Lancia:
       ```
-      subagent({ workflow: SKILL_DIR + "/skills/aarp/workflows/remediate.js",
+      subagent({ workflow: SKILL_DIR + "/workflows/remediate.js",
                  args: { templatesDir: SKILL_DIR,
                          tasks: [ { id: "<id>", title: "<titolo>", branch: "<prefix><slug>",
                                    worktree: "<RD>/worktrees/<slug>", scope: "<scope da ROADMAP.md>" } ] },
@@ -118,7 +121,7 @@ Solo con `--only-doc` o se l'utente la chiede.
 - Nessun `push`/`merge` senza gate esplicito. Default di ogni gate: **N** (tranne H5: N anche lì).
 - La ROADMAP la aggiorna solo `mark_roadmap_task_merged` (deterministico): non far scrivere stato all'LLM.
 - Se un agente chiede una decisione a metà lavoro, risponde il **parent** (non rimandare all'utente un loop infinito).
-- Nel campo `workflow:` di `subagent` usa il path assoluto `SKILL_DIR + "/skills/aarp/workflows/..."`:
+- Nel campo `workflow:` di `subagent` usa il path assoluto `SKILL_DIR + "/workflows/..."`:
   `~` non viene espanso e il path relativo viene risolto contro il `cwd`.
 - Su errore di workflow/agente: fermati, riporta stato esatto + worktree, non riprovare alla cieca.
 - **Recuperare un task saltato**: resta `[ ]` in ROADMAP. Basta chiederlo per ID (es. "esegui TASK-P1-03") oppure rimuovere il suo ID da `skipped` in `<RD>/run.json` e ripartire.

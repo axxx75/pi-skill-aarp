@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-# templates-check.sh — Pre-flight AARP: verifica che template e agenti citati esistano nel pacchetto.
+# templates-check.sh — Pre-flight AARP: verifica che template e agenti citati esistano nella skill.
 # Scansiona i workflow (mappa [key, agente, report, template]) e i prompt degli agenti.
-# Uso: templates-check.sh <pacchetto>
-# Exit: 0 = pacchetto completo, 1 = riferimento mancante, 2 = uso errato.
+# Uso: templates-check.sh <skill-dir>
+# Exit: 0 = skill completa, 1 = riferimento mancante, 2 = uso errato.
 set -euo pipefail
 
-[[ $# -eq 1 ]] || { echo "uso: templates-check.sh <pacchetto>" >&2; exit 2; }
+[[ $# -eq 1 ]] || { echo "uso: templates-check.sh <skill-dir>" >&2; exit 2; }
 
-PKG="$1"
-WF_DIR="${PKG}/skills/aarp/workflows"
-AGENTS_DIR="${PKG}/agents"
-TPL_DIR="${PKG}/templates"
+SKILL="$1"
+WF_DIR="${SKILL}/workflows"
+AGENTS_DIR="${SKILL}/agents"
+TPL_DIR="${SKILL}/templates"
 
 for d in "$WF_DIR" "$AGENTS_DIR" "$TPL_DIR"; do
   [[ -d "$d" ]] || { echo "templates-check: directory mancante: $d" >&2; exit 1; }

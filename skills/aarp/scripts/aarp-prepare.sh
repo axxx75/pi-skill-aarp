@@ -9,7 +9,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PKG_DIR="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
+SKILL_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 # shellcheck source=roadmap_helpers.sh
 source "${SCRIPT_DIR}/roadmap_helpers.sh"
 
@@ -24,16 +24,16 @@ while [[ $# -gt 0 ]]; do
     --branch|--base-branch|--main-branch) TARGET_BRANCH_OVERRIDE="${2:-}"; shift 2 ;;
     --review-dir) REVIEW_DIR_OVERRIDE="${2:-}"; shift 2 ;;
     --base) BASE_DIR="${2:-}"; shift 2 ;;
-    --skill-dir) printf '%s\n' "$PKG_DIR"; exit 0 ;;
+    --skill-dir) printf '%s\n' "$SKILL_DIR"; exit 0 ;;
     -h|--help) echo "uso: aarp-prepare.sh --target <path|url> [--branch B] [--review-dir D] [--base DIR] [--skill-dir]"; exit 0 ;;
     *) echo "Argomento sconosciuto: $1" >&2; exit 2 ;;
   esac
 done
 [[ -n "$TARGET_SPEC" ]] || { echo "Serve --target <path|url>" >&2; exit 2; }
 
-# Pre-flight (fail fast): template e agenti citati devono esistere nel pacchetto.
-"${SCRIPT_DIR}/templates-check.sh" "$PKG_DIR" \
-  || { echo "Pre-flight fallito: pacchetto incompleto (template o agenti mancanti)" >&2; exit 1; }
+# Pre-flight (fail fast): template e agenti citati devono esistere nella skill.
+"${SCRIPT_DIR}/templates-check.sh" "$SKILL_DIR" \
+  || { echo "Pre-flight fallito: skill incompleta (template o agenti mancanti)" >&2; exit 1; }
 
 is_remote_target() {
   case "$1" in
