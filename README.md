@@ -139,6 +139,7 @@ Mappa dei template usata dai workflow (`key → agente → report → template`)
 | `La review-dir appartiene a un altro target` | marker `.aarp-target-key` di un altro repo | usa un'altra `--review-dir` o `--base` |
 | `Snapshot fallito (repo senza commit?)` | repo vuoto | fai almeno un commit nel target |
 | `report-check: sezione mancante` | l'agente ha saltato una sezione del template | rilancia lo step o correggi il report |
+| Skill `aarp` duplicata (pacchetto + copia in `~/.pi/agent/skills/aarp`) | pi carica la **prima** trovata e stampa un warning di collisione; gli agenti del pacchetto hanno priorità **sotto** `~/.pi/agent/agents/` | rimuovi la copia vecchia e i 12 agenti globali dopo la verifica |
 
 ## Privacy
 
