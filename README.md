@@ -33,7 +33,7 @@ pi install /percorso/pi-skill-aarp
 Da repository Git, quando sarà pubblicato:
 
 ```bash
-pi install git:github.com/Axxx75/pi-skill-aarp@v1.0.0
+pi install git:github.com/axxx75/pi-skill-aarp@v1.0.0
 ```
 
 Verifica:
