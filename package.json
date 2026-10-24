@@ -1,0 +1,32 @@
+{
+  "name": "pi-skill-aarp",
+  "version": "1.0.0",
+  "description": "Pipeline AARP per pi: audit multi-agente di un repository Git (context mapping, 6 audit, ROADMAP P0/P1/P2) e remediation guidata con gate umani.",
+  "license": "MIT",
+  "keywords": [
+    "pi-package",
+    "pi-skill",
+    "aarp",
+    "audit",
+    "code-review",
+    "subagents"
+  ],
+  "files": [
+    "skills/",
+    "agents/",
+    "templates/",
+    "tests/",
+    "README.md",
+    "LICENSE"
+  ],
+  "pi": {
+    "skills": [
+      "./skills"
+    ],
+    "subagents": {
+      "agents": [
+        "./agents"
+      ]
+    }
+  }
+}
