@@ -22,8 +22,10 @@ for section in "$@"; do
   fi
 done
 
-# Placeholder di template non sostituiti.
-if grep -qE '<Short |<Scenario|YYYY-MM-DD|TASK-P[012]-XX|\[TBD\]|TODO:' "$report"; then
+# Placeholder di template non sostituiti. Le righe dentro un code-fence (```)
+# sono escluse: un esempio/scheletro citato nel report non e' un placeholder
+# dimenticato (falso negativo visto su AUDIT_DOC_COVERAGE 2026-10-25).
+if awk '/^[[:space:]]*```/{f=!f; next} !f' "$report" | grep -qE '<Short |<Scenario|YYYY-MM-DD|TASK-P[012]-XX|\[TBD\]|TODO:'; then
   echo "report-check: placeholder non sostituiti in $report" >&2
   status=1
 fi

@@ -80,6 +80,10 @@ if "${SCRIPTS}/report-check.sh" "$good" "## Executive Database Summary" 2>/dev/n
 if ! "${SCRIPTS}/report-check.sh" "$good" "## Verification" 2>/dev/null; then ok "report-check rifiuta una sezione mancante"; else ko "report-check su sezione mancante"; fi
 bad="${TMP}/bad.md"; printf '# Report\n\n## Executive Database Summary\n\nTODO: compilare\n' > "$bad"
 if ! "${SCRIPTS}/report-check.sh" "$bad" "## Executive Database Summary" 2>/dev/null; then ok "report-check rifiuta i placeholder"; else ko "report-check su placeholder"; fi
+# Placeholder dentro un code-fence = citazione/esempio, NON dimenticanza:
+# escluso per evitare il falso negativo visto su AUDIT_DOC_COVERAGE (2026-10-25).
+fenced="${TMP}/fenced.md"; printf '# R\n\n## Changelog\n\n```markdown\n## [1.0.1] - YYYY-MM-DD\n```\n' > "$fenced"
+if "${SCRIPTS}/report-check.sh" "$fenced" "## Changelog" 2>/dev/null; then ok "report-check ignora placeholder dentro code-fence"; else ko "report-check segnala placeholder in fence"; fi
 if ! "${SCRIPTS}/report-check.sh" "${TMP}/nope.md" "## X" 2>/dev/null; then ok "report-check rifiuta un report assente"; else ko "report-check su report assente"; fi
 
 # 9. Fail-fast: template mancante → templates-check e aarp-prepare falliscono prima dello snapshot.
