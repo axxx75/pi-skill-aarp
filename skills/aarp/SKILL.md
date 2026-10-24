@@ -34,7 +34,16 @@ Passalo ai workflow come `args.templatesDir`.
 | 2 Audit | `context-mapper`, `ux-ui-auditor`, `security-auditor`, `db-auditor`, `code-quality-auditor`, `devops-auditor`, `doc-coverage-auditor`, `roadmap-director` |
 | 3 Remediation | `developer`, `code-reviewer`, `qa-test` |
 
-Fuori dalla skill (standalone): `aarp-scout`, `aarp-researcher` (utility), `engineering-director` (issue GitLab), `plan` (flusso planning).
+Altri agenti del progetto, **nella skill ma non orchestrati da `workflows/audit.js`** (invocabili a mano o dal task, definizione in `agents/`):
+
+| Agente | Ruolo |
+|---|---|
+| `aarp-scout` | Esplorazione read-only (mappa codebase / scheletro PROJECT_CONTEXT, fase 0) |
+| `aarp-researcher` | Ricerca web su un argomento (fase 0) |
+| `engineering-director` | Legge i report in `<cwd>/.aarp/reports/` e pubblica una issue GitLab per finding (post-remediation) |
+| `plan` | Pianificazione infrastruttura (produzione piani/spec per agenti) |
+
+Tutti e 16 gli agenti del progetto vivono in `agents/` (dal 2026-10-25; prima erano in `~/.pi/agent/agents/` fuori dal bundle).
 
 ## Fase 0 — Prepare
 

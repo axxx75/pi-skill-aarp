@@ -133,8 +133,11 @@ Mappa dei template usata dai workflow (`key → agente → report → template`)
 | `qa` | `qa-test` | `TEST_REPORT.md` | `TEST_REPORT.template.md` |
 | `review` | `code-reviewer` | `REVIEW_REPORT.md` | `REVIEW_REPORT.template.md` |
 
-`TASK_ISSUE.template.md` e `AUDIT_DOCS.template.md` **non** sono inclusi: il primo è usato solo da
-`engineering-director`, fuori dalla pipeline; il secondo non è citato da nessun agente né workflow.
+`TASK_ISSUE.template.md` (corpo issue, da `engineering-director`) e `AUDIT_DOCS.template.md`
+sono **inclusi** dal 2026-10-25: con loro nel bundle anche `templates-check.sh` copre tutti i
+riferimenti. Lo stesso giorno sono entrati in `agents/` i 4 agenti prima tenuti fuori
+(`aarp-scout`, `aarp-researcher`, `engineering-director`, `plan`) — tutti e 16 gli agenti del
+progetto vivono nella skill (SKILL.md tabella "Altri agenti").
 
 ## Troubleshooting
 

@@ -44,12 +44,12 @@ if bad:
     print("\n".join(bad)); sys.exit(1)
 print(f"frontmatter ok ({len(files)} file)")
 PY
-if [[ $? -eq 0 ]]; then ok "frontmatter YAML (12 agenti + SKILL.md)"; else ko "frontmatter YAML"; fi
+if [[ $? -eq 0 ]]; then ok "frontmatter YAML (agenti + SKILL.md)"; else ko "frontmatter YAML"; fi
 
 # 2. Solo i 12 agenti della pipeline, niente extra.
-expected="code-quality-auditor code-reviewer context-mapper db-auditor developer devops-auditor doc-coverage-auditor documentation-architect qa-test roadmap-director security-auditor ux-ui-auditor"
+expected="aarp-researcher aarp-scout code-quality-auditor code-reviewer context-mapper db-auditor developer devops-auditor doc-coverage-auditor documentation-architect engineering-director plan qa-test roadmap-director security-auditor ux-ui-auditor"
 actual="$(cd "${SKILL_DIR}/agents" && ls *.md | sed 's/\.md$//' | sort | tr '\n' ' ' | sed 's/ $//')"
-if [[ "$actual" == "$expected" ]]; then ok "12 agenti attesi, nessun extra"; else ko "agenti: attesi [$expected], trovati [$actual]"; fi
+if [[ "$actual" == "$expected" ]]; then ok "16 agenti attesi, nessun extra"; else ko "agenti: attesi [$expected], trovati [$actual]"; fi
 
 # 3. Script eseguibili.
 for s in aarp-prepare.sh report-check.sh roadmap_helpers.sh templates-check.sh; do
