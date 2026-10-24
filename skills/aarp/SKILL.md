@@ -10,7 +10,7 @@ il target si tocca solo in Fase 3, dopo i gate H2+H3. Git e aggiornamento ROADMA
 **deterministici nel parent** (bash), mai delegati all'LLM.
 
 ```
-SKILL_DIR=$(<skill-dir>/scripts/aarp-prepare.sh --skill-dir)
+SKILL_DIR=$({baseDir}/scripts/aarp-prepare.sh --skill-dir)
 ```
 
 `SKILL_DIR` è la radice del pacchetto (script, workflow, agenti e template): il path della skill te lo
