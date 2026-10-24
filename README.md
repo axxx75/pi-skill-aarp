@@ -30,11 +30,18 @@ Da path locale (il pacchetto è caricato dal path, senza copiarlo):
 pi install /percorso/pi-skill-aarp
 ```
 
-Da repository Git, quando sarà pubblicato:
+Da repository Git — **senza ref** = installa/sempre aggiornata all'ultima versione online
+(`pi update` riallinea il checkout al `main`):
 
 ```bash
-pi install git:github.com/axxx75/pi-skill-aarp@v1.0.0
+pi install git:github.com/axxx75/pi-skill-aarp
 ```
+
+⚠️ Non usare `@v1.0.0`: un tag/commit come ref è **pinnato per sempre** e `pi update` non lo
+sposta più (docs pi `packages.md`). Un ref serve solo per fissare una versione nota.
+
+> **Cartella `aarp-reviews`**: le review generate vivono in `~/PI/aarp-reviews` (workdir pi).
+> L'installazione non la tocca né la ricrea: resta lì tra le sessioni.
 
 Verifica:
 
